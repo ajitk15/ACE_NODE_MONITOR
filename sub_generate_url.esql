@@ -1,0 +1,16 @@
+
+CREATE COMPUTE MODULE generate_url
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE inRef REFERENCE TO InputRoot.JSON.Data.Item;
+		FOR atChild AS inRef.[] DO
+			IF InputRoot.JSON.Data.Item.Item[I].apiResponseCode = 200 THEN
+				SET OutputLocalEnvironment.Destination.HTTP.RequestURL = 'http://localhost:4414/apiv2/servers/' || FIELDVALUE(InputRoot.JSON.Data.Item.Item[I].IS) || '/applications';
+				PROPAGATE TO TERMINAL 'out';
+			END IF;
+			SET I = I + 1;
+		END FOR;
+		RETURN FALSE;
+	END;
+END MODULE;
