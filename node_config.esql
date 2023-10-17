@@ -1,0 +1,9 @@
+
+
+CREATE COMPUTE MODULE node_config
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.JSON.Data.descriptiveProperties = InputRoot.JSON.Data.descriptiveProperties;
+		RETURN TRUE;
+	END;
+END MODULE;

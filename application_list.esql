@@ -1,0 +1,51 @@
+
+
+
+
+CREATE COMPUTE MODULE application_list
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE I INTEGER 1;
+		DECLARE inRef REFERENCE TO InputRoot.JSON.Data.result;
+		FOR atResult AS inRef.Item[] DO
+			CREATE FIELD OutputRoot.JSON.Data.result IDENTITY(JSON.Array)result;
+
+			DECLARE is_name CHARACTER;
+			SET is_name = SUBSTRING(inRef.Item[I].uri AFTER '/apiv2/servers/');
+			SET is_name = SUBSTRING(is_name BEFORE '/applications');
+
+			CREATE LASTCHILD OF OutputRoot.JSON.Data.result.Item[I] NAME 'IS' VALUE is_name;
+			CREATE LASTCHILD OF OutputRoot.JSON.Data.result.Item[I] NAME 'active' VALUE 1;
+
+			CREATE FIELD OutputRoot.JSON.Data.result.Item[I].children IDENTITY(JSON.Array)children;
+			DECLARE J INTEGER 1;
+			FOR atChild AS inRef.Item[I].children.Item[] DO
+				CREATE LASTCHILD OF OutputRoot.JSON.Data.result.Item[I].children.Item[J] NAME 'name' VALUE inRef.Item[I].children.Item[J].name;
+				CREATE LASTCHILD OF OutputRoot.JSON.Data.result.Item[I].children.Item[J] NAME 'type' VALUE inRef.Item[I].children.Item[J].type;
+				SET J = J + 1;
+			END FOR;
+			SET I = I + 1;
+		END FOR;
+
+		RETURN TRUE;		
+
+
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
+
+
