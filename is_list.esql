@@ -1,8 +1,11 @@
 
-
 CREATE COMPUTE MODULE is_list
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
+		
+		 DECLARE irowref  REFERENCE TO isrow;
+		 SET irowref = InputRoot.JSON.Data;
+		 SET Environment.islist = irowref;
 		
 		DECLARE I INTEGER 1;
 		DECLARE inRef REFERENCE TO InputRoot.JSON.Data.children;
@@ -13,6 +16,7 @@ CREATE COMPUTE MODULE is_list
 			CREATE LASTCHILD OF OutputRoot.JSON.Data.result.Item[I] NAME 'apiResponseCode' VALUE inRef.Item[I].apiResponseCode;
 			SET I = I + 1;
 		END FOR;
+	
 		
 		RETURN TRUE;
 	END;
