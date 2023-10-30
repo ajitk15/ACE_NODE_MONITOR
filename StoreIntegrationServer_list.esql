@@ -1,10 +1,13 @@
 
-
-CREATE COMPUTE MODULE substring
+DECLARE isrow SHARED ROW;
+CREATE COMPUTE MODULE StoreIntegrationServer_list
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
 		-- CALL CopyMessageHeaders();
-		-- CALL CopyEntireMessage();
+		CALL CopyEntireMessage();
+		 DECLARE irowref  REFERENCE TO isrow;
+		 SET irowref = InputRoot.JSON.Data.result;
+		 SET Environment.islist = irowref;
 		RETURN TRUE;
 	END;
 

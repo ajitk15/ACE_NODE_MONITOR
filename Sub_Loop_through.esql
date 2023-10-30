@@ -3,8 +3,6 @@
 CREATE COMPUTE MODULE Loop_through
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-		-- CALL CopyMessageHeaders();
-		-- CALL CopyEntireMessage();
 		DECLARE card INTEGER;
 		DECLARE idx INTEGER 1;
 		DECLARE Ref_grpRef reference TO InputRoot.ComIbmGroupCompleteNode.Group.Replies;
